@@ -1,16 +1,13 @@
 # import uvicorn
 from fastapi import FastAPI
 from database import db
+from routers import articleRouter as _article
 
 app = FastAPI()
 
 db.init()
 
-app = FastAPI(
-    title="Blog Application",
-    description="Blog Users",
-    version="1",
-)
+app = FastAPI(title="Blog Application",description="Blog Users",version="1",)
 
 
 @app.on_event("startup")
@@ -25,6 +22,8 @@ async def shutdown():
 @app.get("/")
 async def hello_world():
     return "hello_world"
+
+app.include_router(_article.router)
 
 
 # @app.post('/create')
