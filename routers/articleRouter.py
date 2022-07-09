@@ -22,12 +22,11 @@ async def fetchArticle():
     query = select(Article)
     query = await db.execute(query)
     query = query.scalars().all()
-    data = [{'id':q.id,'title':q.title,'description':q.description,'updated':q.updated} for q in query]
+    data = [{'id':q.id,'title':q.title,'description':q.description,'updated':q.updated,'active':q.active} for q in query]
     return data
 
 @router.put('/update/{id}')
 async def updateArticle(id:int,request:dict=Body(...)):
-
     query = update(Article).where(Article.id==id)
     query = query.values(title=request['title'],description=request['description'])  
     query.execution_options(synchronize_session="fetch")
