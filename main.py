@@ -1,7 +1,7 @@
 # import uvicorn
 from fastapi import FastAPI
 from database import db
-from routers import articleRouter as _article
+from routers import articleRouter as _article,authRouter as _auth
 
 app = FastAPI()
 
@@ -24,6 +24,7 @@ async def hello_world():
     return "hello_world"
 
 app.include_router(_article.router)
+app.include_router(_auth.router)
 
 
 # @app.post('/create')
