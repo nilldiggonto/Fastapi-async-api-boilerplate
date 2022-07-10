@@ -1,14 +1,13 @@
 # import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI,Request
 from database import db
 from routers import articleRouter as _article,authRouter as _auth
+from starlette.middleware.sessions import SessionMiddleware
 
 app = FastAPI()
-
 db.init()
 
 app = FastAPI(title="Blog Application",description="Blog Users",version="1",)
-
 
 @app.on_event("startup")
 async def startup():
@@ -19,9 +18,18 @@ async def startup():
 async def shutdown():
     await db.close()
 
+app.add_middleware(SessionMiddleware,secret_key='whatever')
+
 @app.get("/")
-async def hello_world():
+async def hello_world(request:Request):
+    session = request.session.get('token',None)
+    if not session:
+        request.session['token'] ="i am token"
     return "hello_world"
+
+@app.get('/test')
+async def test():
+    return 'test'
 
 app.include_router(_article.router)
 app.include_router(_auth.router)

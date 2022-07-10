@@ -9,3 +9,4 @@ jinja2
 asyncpg
 passlib
 python-jose
+itsdangerous
