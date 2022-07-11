@@ -3,6 +3,11 @@ from fastapi import FastAPI,Request
 from database import db
 from routers import articleRouter as _article,authRouter as _auth
 from starlette.middleware.sessions import SessionMiddleware
+from authenticate import get_user
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
+
+
 
 app = FastAPI()
 db.init()
@@ -20,16 +25,30 @@ async def shutdown():
 
 app.add_middleware(SessionMiddleware,secret_key='whatever')
 
+templates = Jinja2Templates(directory="templates")
+
+
+async def get_authenticate_user(request):
+    session = request.session.get('token',None)
+    if session:
+        user = await get_user(session)
+        return user
+    return session
+
+
 @app.get("/")
 async def hello_world(request:Request):
-    session = request.session.get('token',None)
-    if not session:
-        request.session['token'] ="i am token"
+    # session = request.session.get('token',None)
+    # if not session:
+    #     request.session['token'] ="i am token"
     return "hello_world"
 
-@app.get('/test')
-async def test():
-    return 'test'
+@app.get('/test',response_class=HTMLResponse)
+async def test(request:Request):
+    user = await get_authenticate_user(request)
+    if not user:
+        return "<h1> not authenticate </h1>"
+    return templates.TemplateResponse("test.html",{'request':request})
 
 app.include_router(_article.router)
 app.include_router(_auth.router)
