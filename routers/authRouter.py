@@ -6,7 +6,6 @@ from models import User
 from sqlalchemy.future import select
 from authenticate import create_access_token,get_user
 
-
 router = APIRouter(prefix='/user')
 
 #Password hashed and validators
@@ -47,10 +46,9 @@ async def loginUser(_rsession:Request,request:UserloginSchema):
     if not verifyPass(request.password,user.password):
         return {'status':'wrong password'}
     access_token = await create_access_token(data= {"user_id":user.id,'email':user.email})
-    session = _rsession.session.get('token',None)
-    if not session:
-        bearer_token = "Bearer "+ access_token
-        _rsession.session['token'] =bearer_token
+  
+    bearer_token = "Bearer "+ access_token
+    _rsession.session['token'] =bearer_token
     return {'access_token':access_token,'token_type':"bearer",'alert':'success'}
 
 @router.post('/verify/token')

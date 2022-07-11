@@ -1,17 +1,16 @@
 # import uvicorn
 from fastapi import FastAPI,Request
 from database import db
-from routers import articleRouter as _article,authRouter as _auth
+from routers import authRouter as _auth,crudRouter as _crud
 from starlette.middleware.sessions import SessionMiddleware
 from authenticate import get_user
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse,RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
-app = FastAPI()
 db.init()
 
-app = FastAPI(title="Blog Application",description="Blog Users",version="1",)
+app = FastAPI(title="Blog Application",description="Blog Users",version="1",docs_url=None, redoc_url=None)
 
 @app.on_event("startup")
 async def startup():
@@ -50,7 +49,7 @@ async def login(request:Request):
     return templates.TemplateResponse("login.html",{'request':request})
 
 
-app.include_router(_article.router)
+app.include_router(_crud.router)
 app.include_router(_auth.router)
 
 
