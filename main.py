@@ -5,9 +5,8 @@ from routers import articleRouter as _article,authRouter as _auth
 from starlette.middleware.sessions import SessionMiddleware
 from authenticate import get_user
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
-
-
+from fastapi.responses import HTMLResponse,RedirectResponse
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
 db.init()
@@ -26,7 +25,7 @@ async def shutdown():
 app.add_middleware(SessionMiddleware,secret_key='whatever')
 
 templates = Jinja2Templates(directory="templates")
-
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 async def get_authenticate_user(request):
     session = request.session.get('token',None)
@@ -35,23 +34,41 @@ async def get_authenticate_user(request):
         return user
     return session
 
-
-@app.get("/")
-async def hello_world(request:Request):
-    # session = request.session.get('token',None)
-    # if not session:
-    #     request.session['token'] ="i am token"
-    return "hello_world"
-
-@app.get('/test',response_class=HTMLResponse)
-async def test(request:Request):
+@app.get("/",response_class=HTMLResponse)
+async def index(request:Request):
     user = await get_authenticate_user(request)
     if not user:
-        return "<h1> not authenticate </h1>"
-    return templates.TemplateResponse("test.html",{'request':request})
+        return RedirectResponse('/register')
+    return templates.TemplateResponse("home.html",{'request':request})
+    
+@app.get("/register",response_class=HTMLResponse)
+async def register(request:Request):
+    return templates.TemplateResponse("register.html",{'request':request})
+
+@app.get("/login",response_class=HTMLResponse)
+async def login(request:Request):
+    return templates.TemplateResponse("login.html",{'request':request})
+
 
 app.include_router(_article.router)
 app.include_router(_auth.router)
+
+
+
+
+# @app.get("/")
+# async def testworld(request:Request):
+#     # session = request.session.get('token',None)
+#     # if not session:
+#     #     request.session['token'] ="i am token"
+#     return "yo"
+
+# @app.get('/test',response_class=HTMLResponse)
+# async def test(request:Request):
+#     user = await get_authenticate_user(request)
+#     if not user:
+#         return "<h1> not authenticate </h1>"
+#     return templates.TemplateResponse("test.html",{'request':request})
 
 
 # @app.post('/create')

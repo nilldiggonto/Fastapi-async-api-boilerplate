@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{%block title %}Register {%endblock title %}
+
+{%block style %}
+
+{%endblock style %}
+
+{% block content %}
+
+<div class="container-fluid" >
+
+    <div class="row center-screen">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header text-center bg-primary text-light">
+                    <h4>Registration Form</h4>
+                    
+                </div>
+
+                <div class="card-body">
+                    <form class="row g-3" onsubmit="registerForm(event)">
+                        <div class="col-md-6">
+                          <label for="inputEmail4" class="form-label">Email</label>
+                          <input type="email" required class="form-control" id="email">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="phone_no" class="form-label">Phone no</label>
+                            <input type="text" required class="form-control" id="phone">
+                          </div>
+                        <div class="col-12">
+                          <label for="inputPassword4" class="form-label">Password</label>
+                          <input type="password" required class="form-control" id="password">
+                        </div>
+                        <div class="col-12">
+                            <label for="inputPassword4" class="form-label">Confirm Password</label>
+                            <input type="password" required class="form-control" id="password2">
+                          </div>
+                        
+                        <div class="col-12 d-flex justify-content-center">
+                          <button type="submit" class="btn btn-primary">Register</button>
+                        </div>
+                        <hr>
+                        <div class="col-12">
+                            Already have an account?
+                            <a class="btn btn-sm btn-info" href="/login">SIGN IN</a>
+                        </div>
+
+                      </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{%endblock content %}
+
+{%block script %}
+<script src="/static/register.js"></script>
+{%endblock script %}
